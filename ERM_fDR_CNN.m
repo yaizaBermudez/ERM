@@ -28,7 +28,7 @@ out2 = elu_fast(w2*x+b2);
 out3 = elu_fast(w3*out2+b3);
 out = elu_fast(w4*out3+b4);
 
-[~,ind] = max(out);
+[~,ind] = maout);
 num = ind-1;
 
 %acc  = sum((0==(y'-num)));  % This is accuracy
@@ -53,7 +53,7 @@ function Lz = empiricalrisk(model, x, y)
     pred = pred - 1;              % convert to 0-based labels
 
     % Compare directly
-    loss = sum(pred(:) ~= y(:));
+    loss = sum(pred( ~= y(;
     Lz = loss / n;
 end
 
@@ -164,10 +164,10 @@ indts  = false(1,n_smap_ts); % Alocate memory of logic vector
 indts(indxts) = true(1);     % Generate index logic vector
 
 
-Z1x = Xtr(ind,:);
+Z1x = Xtr(ind,;
 Z1y = Ytr(ind);
 
-Z2x = Xts(indts,:);
+Z2x = Xts(indts,;
 Z2y = Yts(indts);
 
 n_subsample = length(indx);
@@ -182,9 +182,9 @@ disp('computing Lz1 and Lz2 ');
 tic
 for i= 1:k
     if exist('Cell_m','var')
-        m = Cell_m(i,:); % if the set M < 2GB for storage
+        m = Cell_m(i,; % if the set M < 2GB for storage
     else
-        m = cnvxmodels(M1,M2,M3,M4,Cx(i,:)); % if the set M > 2GB for storage
+        m = cnvxmodels(M1,M2,M3,M4,Cx(i,; % if the set M > 2GB for storage
     end
     Lz1(i) = empiricalrisk(m,Z1x,Z1y);
     Lz2(i) = empiricalrisk(m,Z2x,Z2y);
@@ -231,7 +231,7 @@ lambda = lamb(i);
 %---------------------------------
 bt1z1(i) = -lambda+lambda*log(sum(sum(exp(-Lz1./lambda).*dQ)));
 P1_z1 = ermT1(Lz1,lambda,dQ);
-%P1cdf_z1 = pdf2cdf(P1_z1.*Qpdf.*dx1.*dx2);
+P1cdf_z1 = pdf2cdf(P1_z1.*Qpdf.*dx1.*dx2);
 
 
 % ---------------------------------
@@ -239,9 +239,9 @@ P1_z1 = ermT1(Lz1,lambda,dQ);
 %---------------------------------
 % Compute the Type-2 set Z1
 %---------------------------------
-%bt2z1(i) = findbetaf(Lz1,dQ,lambda,ermT2,'Type2');
-%P2_z1 = ermT2(Lz1,lambda,bt2z1(i));
-%P2cdf_z1   = pdf2cdf(P2_z1.*Qpdf.*dx1.*dx2);
+bt2z1(i) = findbetaf(Lz1,dQ,lambda,ermT2,'Type2');
+P2_z1 = ermT2(Lz1,lambda,bt2z1(i));
+P2cdf_z1   = pdf2cdf(P2_z1.*Qpdf.*dx1.*dx2);
 
 
 % ---------------------------------
@@ -249,16 +249,16 @@ P1_z1 = ermT1(Lz1,lambda,dQ);
 %---------------------------------
 % Compute the Jensen-Shannon set Z1
 %---------------------------------
-%bt3z1(i) = findbetaf(Lz1,dQ,lambda,jserm,'JSerm');
-%P3_z1 = jserm(Lz1,lambda,bt3z1(i));
+bt3z1(i) = findbetaf(Lz1,dQ,lambda,jserm,'JSerm');
+P3_z1 = jserm(Lz1,lambda,bt3z1(i));
 
 %---------------------------------
 %      Compute ERM-RER Hellinger
 %---------------------------------
 % Compute the Hellinger set Z1
 %---------------------------------
-%bt4z1(i) = findbetaf(Lz1,dQ,lambda,heerm,'Hell');
-%P4_z1 = heerm(Lz1,lambda,bt4z1(i));
+bt4z1(i) = findbetaf(Lz1,dQ,lambda,heerm,'Hell');
+P4_z1 = heerm(Lz1,lambda,bt4z1(i));
 
 % Pre Compute Expected ER
 %---------------------------------
@@ -271,14 +271,14 @@ Lz2dQ = Lz2.*dQ;
 %---------------------------------
 
 Rz1p1z1(i) = sum(sum(Lz1dQ.*P1_z1));
-%Rz1p2z1(i) = sum(sum(Lz1dQ.*P2_z1));
-%Rz1p3z1(i) = sum(sum(Lz1dQ.*P3_z1));
-%Rz1p4z1(i) = sum(sum(Lz1dQ.*P4_z1));
+Rz1p2z1(i) = sum(sum(Lz1dQ.*P2_z1));
+Rz1p3z1(i) = sum(sum(Lz1dQ.*P3_z1));
+Rz1p4z1(i) = sum(sum(Lz1dQ.*P4_z1));
 
 Rz2p1z1(i) = sum(sum(Lz2dQ.*P1_z1));
-%Rz2p2z1(i) = sum(sum(Lz2dQ.*P2_z1));
-%Rz2p3z1(i) = sum(sum(Lz2dQ.*P3_z1));
-%Rz2p4z1(i) = sum(sum(Lz2dQ.*P4_z1));
+Rz2p2z1(i) = sum(sum(Lz2dQ.*P2_z1));
+Rz2p3z1(i) = sum(sum(Lz2dQ.*P3_z1));
+Rz2p4z1(i) = sum(sum(Lz2dQ.*P4_z1));
 
 toc
 end
@@ -296,31 +296,31 @@ zte    = {'0','1','2'};
 % Training Error VS Generalization
 
 RzT1  = [Rz1p1z1,Rz2p1z1];
-%RzT2  = [Rz1p2z1,Rz2p2z1];
-%RzT3  = [Rz1p3z1,Rz2p3z1];
-%RzT4  = [Rz1p4z1,Rz2p4z1];
+RzT2  = [Rz1p2z1,Rz2p2z1];
+RzT3  = [Rz1p3z1,Rz2p3z1];
+RzT4  = [Rz1p4z1,Rz2p4z1];
 
 % Sensitivity
 GpT1   = abs(Rz2p1z1 - Rz1p1z1);
-%GpT2   = abs(Rz2p2z1 - Rz1p2z1);
-%GpT3   = abs(Rz2p3z1 - Rz1p3z1);
-%GpT4   = abs(Rz2p4z1 - Rz1p4z1);
+GpT2   = abs(Rz2p2z1 - Rz1p2z1);
+GpT3   = abs(Rz2p3z1 - Rz1p3z1);
+GpT4   = abs(Rz2p4z1 - Rz1p4z1);
 
 %% Save Data From Run
 GpT1_all{j} = GpT1;
-%GpT2_all{j} = GpT2;
-%GpT3_all{j} = GpT3;
-%GpT4_all{j} = GpT4;
+GpT2_all{j} = GpT2;
+GpT3_all{j} = GpT3;
+GpT4_all{j} = GpT4;
 
 RzT1_all{j} = RzT1;
-%RzT2_all{j} = RzT2;
-%RzT3_all{j} = RzT3;
-%RzT4_all{j} = RzT4;
+RzT2_all{j} = RzT2;
+RzT3_all{j} = RzT3;
+RzT4_all{j} = RzT4;
 
 NQzT1_all{j}  = bt1z1;
-%NQzT2_all{j}  = bt2z1;
-%NQzT3_all{j}  = bt3z1;
-%NQzT4_all{j}  = bt4z1;
+NQzT2_all{j}  = bt2z1;
+NQzT3_all{j}  = bt3z1;
+NQzT4_all{j}  = bt4z1;
 end
 
 FileName=['Proj',datestr(now, '_yyyy-mmm-dd_HH-MM_'),DataSet];
@@ -341,3 +341,20 @@ save([PathData, FileName],"GpT1_all",...
                      "lamb");
 save([PathData, FileName,'_all']);
 
+
+
+
+Yaiza Bermudez
+
+Webpage:
+-----------
+https://www-sop.inria.fr/members/Yaiza.Bermudez/index.html
+
+Contact: 
+-----------
+Inria
+2004  Route des Lucioles  
+06902 Sophia Antipolis, France
+Equipe NEO, Bâtiment Lagrange, Office: L116 
+yaiza.bermudez@inria.fr
++33 (0) 4 92 38 50 42
