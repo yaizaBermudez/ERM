@@ -1,8 +1,16 @@
+import os
+import sys
 import numpy as np
 import scipy.io as sio
 import pandas as pd
 import matplotlib.pyplot as plt
 from elu_fast import elu_fast
+
+# Add PlotFunctions to the path so we can reuse the repository's
+# plotting helpers rather than defining our own Matplotlib code.
+sys.path.append(os.path.join(os.path.dirname(__file__), "PlotFunctions"))
+from plot_utils import plot_erm_sen_t1_vs_t2, plot_emp_risk_t1_vs_t2
+from plotNQzlog import plot_nqz
 
 def formatdata(data):
     n_samples = data.shape[0]
@@ -110,22 +118,19 @@ def main():
     )
     df.to_csv("ERM_fDR_CNN_results.csv", index=False)
 
-    # Plot results
-    plt.figure()
-    plt.semilogx(lamb, GpT1)
-    plt.xlabel("lambda")
-    plt.ylabel("GpT1")
-    plt.title("Generalization Gap vs Lambda")
-    plt.grid(True)
+    # Plot results using helper functions from PlotFunctions
+    fig1, ax1 = plt.subplots()
+    plot_erm_sen_t1_vs_t2(ax1, lamb, GpT1[:, None], np.zeros_like(GpT1)[:, None],
+                          labels=["Type-I ERM-RER"], loglog=False, onstd=False)
+    ax1.set_xscale("log")
 
-    plt.figure()
-    plt.semilogx(lamb, RzT1[:, 0], label="Rz1p1z1")
-    plt.semilogx(lamb, RzT1[:, 1], label="Rz2p1z1")
-    plt.xlabel("lambda")
-    plt.ylabel("Empirical risk")
-    plt.title("Empirical Risks vs Lambda")
-    plt.legend()
-    plt.grid(True)
+    fig2, ax2 = plt.subplots()
+    plot_emp_risk_t1_vs_t2(ax2, lamb, RzT1, np.zeros_like(RzT1),
+                           labels=["Train", "Test"], loglog=False, onstd=False)
+    ax2.set_xscale("log")
+
+    fig3, ax3 = plt.subplots()
+    plot_nqz(ax3, lamb, bt1z1[:, None], onstd=False)
 
     plt.show()
 
