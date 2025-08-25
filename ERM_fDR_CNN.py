@@ -1,5 +1,7 @@
 import numpy as np
 import scipy.io as sio
+import pandas as pd
+import matplotlib.pyplot as plt
 from elu_fast import elu_fast
 
 def formatdata(data):
@@ -94,7 +96,39 @@ def main():
 
     GpT1 = np.abs(Rz2p1z1 - Rz1p1z1)
     RzT1 = np.column_stack([Rz1p1z1, Rz2p1z1])
-    results = {'GpT1': GpT1, 'RzT1': RzT1, 'NQzT1': bt1z1, 'lamb': lamb}
+    results = {"GpT1": GpT1, "RzT1": RzT1, "NQzT1": bt1z1, "lamb": lamb}
+
+    # Save results to CSV
+    df = pd.DataFrame(
+        {
+            "lamb": lamb,
+            "GpT1": GpT1,
+            "Rz1p1z1": RzT1[:, 0],
+            "Rz2p1z1": RzT1[:, 1],
+            "NQzT1": bt1z1,
+        }
+    )
+    df.to_csv("ERM_fDR_CNN_results.csv", index=False)
+
+    # Plot results
+    plt.figure()
+    plt.semilogx(lamb, GpT1)
+    plt.xlabel("lambda")
+    plt.ylabel("GpT1")
+    plt.title("Generalization Gap vs Lambda")
+    plt.grid(True)
+
+    plt.figure()
+    plt.semilogx(lamb, RzT1[:, 0], label="Rz1p1z1")
+    plt.semilogx(lamb, RzT1[:, 1], label="Rz2p1z1")
+    plt.xlabel("lambda")
+    plt.ylabel("Empirical risk")
+    plt.title("Empirical Risks vs Lambda")
+    plt.legend()
+    plt.grid(True)
+
+    plt.show()
+
     return results
 
 if __name__ == '__main__':
